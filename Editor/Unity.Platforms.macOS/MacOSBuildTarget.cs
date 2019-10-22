@@ -6,10 +6,8 @@ namespace Unity.Platforms.MacOS
 {
     public abstract class MacOSBuildTarget : BuildTarget
     {
-        public override string GetUnityPlatformName()
-        {
-            return nameof(UnityEditor.BuildTarget.StandaloneOSX);
-        }
+        public override bool CanBuild => UnityEngine.Application.platform == UnityEngine.RuntimePlatform.OSXEditor;
+        public override string UnityPlatformName => nameof(UnityEditor.BuildTarget.StandaloneOSX);
     }
 
     class DotNetMacOSBuildTarget : MacOSBuildTarget
@@ -18,20 +16,9 @@ namespace Unity.Platforms.MacOS
         protected override bool IsDefaultBuildTarget => true;
 #endif
 
-        public override string GetDisplayName()
-        {
-            return "MacOS .NET";
-        }
-
-        public override string GetBeeTargetName()
-        {
-            return "macos-dotnet";
-        }
-
-        public override string GetExecutableExtension()
-        {
-            return ".exe";
-        }
+        public override string DisplayName => "macOS .NET";
+        public override string BeeTargetName => "macos-dotnet";
+        public override string ExecutableExtension => ".exe";
 
         public override bool Run(FileInfo buildTarget)
         {
@@ -64,7 +51,7 @@ namespace Unity.Platforms.MacOS
             var shellArgs = new ShellProcessArgs
             {
                 Executable = Path.GetFullPath(Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "MonoBleedingEdge", "bin", "mono")),
-                Arguments = new [] { $"\"{workingDirPath}/{exeName}{GetExecutableExtension()}\"" },
+                Arguments = new [] { $"\"{workingDirPath}/{exeName}{ExecutableExtension}\"" },
                 WorkingDirectory = new DirectoryInfo(workingDirPath),
                 ThrowOnError = false
             };
@@ -83,20 +70,9 @@ namespace Unity.Platforms.MacOS
 
     class IL2CPPMacOSBuildTarget : MacOSBuildTarget
     {
-        public override string GetDisplayName()
-        {
-            return "MacOS IL2CPP";
-        }
-
-        public override string GetBeeTargetName()
-        {
-            return "macos-il2cpp";
-        }
-
-        public override string GetExecutableExtension()
-        {
-            return string.Empty;
-        }
+        public override string DisplayName => "macOS IL2CPP";
+        public override string BeeTargetName => "macos-il2cpp";
+        public override string ExecutableExtension => string.Empty;
 
         public override bool Run(FileInfo buildTarget)
         {
@@ -127,7 +103,7 @@ namespace Unity.Platforms.MacOS
         {
             var shellArgs = new ShellProcessArgs
             {
-                Executable = $"{workingDirPath}/{exeName}{GetExecutableExtension()}",
+                Executable = $"{workingDirPath}/{exeName}{ExecutableExtension}",
                 Arguments = new string [] {},
                 WorkingDirectory = new DirectoryInfo(workingDirPath),
                 ThrowOnError = false
