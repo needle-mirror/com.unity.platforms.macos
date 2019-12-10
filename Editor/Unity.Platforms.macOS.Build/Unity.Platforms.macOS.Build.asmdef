@@ -1,0 +1,17 @@
+{
+    "name": "Unity.Platforms.macOS.Build",
+    "references": [
+        "Unity.Build",
+        "Unity.Platforms.Build",
+        "Unity.Platforms.Desktop.Build",
+        "Unity.Properties",
+        "Unity.Properties.Editor",
+        "Unity.Serialization"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}

@@ -1,0 +1,10 @@
+{
+    "BuildSteps": [
+        "Unity.Platforms.Build.SaveScenesAndAssets, Unity.Platforms.Build",
+        "Unity.Platforms.Build.BuildStepApplyPlayerSettings, Unity.Platforms.Build",
+        "Unity.Platforms.Build.BuildStepSwitchPlatfomClassic, Unity.Platforms.Build",
+        "Unity.Platforms.Build.BuildStepBuildClassicPlayer, Unity.Platforms.Build",
+        "Unity.Platforms.MacOS.Build.BuildStepProduceMacOSArtifacts, Unity.Platforms.MacOS.Build"
+    ],
+    "RunStep": "Unity.Platforms.MacOS.Build.RunStepMacOS, Unity.Platforms.MacOS.Build"
+}
