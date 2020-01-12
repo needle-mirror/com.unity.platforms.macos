@@ -1,0 +1,16 @@
+{
+    "name": "Unity.Platforms.macOS.Build",
+    "references": [
+        "Unity.Platforms.Build",
+        "Unity.Platforms.Build.Classic",
+        "Unity.Platforms.Build.Common",
+        "Unity.Platforms.Build.Editor",
+        "Unity.Properties"
+    ],
+    "optionalUnityReferences": [],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false
+}
