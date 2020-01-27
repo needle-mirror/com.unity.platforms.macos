@@ -1,5 +1,5 @@
 using System.Diagnostics;
-using Unity.Platforms.Build;
+using Unity.Build;
 
 namespace Unity.Platforms.MacOS.Build
 {

@@ -1,6 +1,6 @@
 using System.Diagnostics;
 using System.IO;
-using Unity.Platforms.Build;
+using Unity.Build;
 
 namespace Unity.Platforms.MacOS.Build
 {

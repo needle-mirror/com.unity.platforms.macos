@@ -1,9 +1,9 @@
 ﻿using System.IO;
-using Unity.Platforms.Build.Classic;
-using Unity.Platforms.Build.Common;
-using Unity.Platforms.Build.Editor;
+using Unity.Build.Classic;
+using Unity.Build.Common;
+using Unity.Build.Editor;
 using UnityEditor;
-using BuildPipeline = Unity.Platforms.Build.BuildPipeline;
+using BuildPipeline = Unity.Build.BuildPipeline;
 
 namespace Unity.Platforms.MacOS.Build
 {
