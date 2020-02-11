@@ -8,6 +8,20 @@ namespace Unity.Platforms.MacOS
     {
         public override bool CanBuild => UnityEngine.Application.platform == UnityEngine.RuntimePlatform.OSXEditor;
         public override string UnityPlatformName => nameof(UnityEditor.BuildTarget.StandaloneOSX);
+
+        internal static void HookProcessToDebugLog(Process process)
+        {
+            process.OutputDataReceived += (_, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                    Debug.Log(args.Data);
+            };
+            process.ErrorDataReceived += (_, args) =>
+            {
+                if (!string.IsNullOrEmpty(args.Data))
+                    Debug.LogError(args.Data);
+            };
+        }
     }
 
     class DotNetMacOSBuildTarget : MacOSBuildTarget
@@ -33,8 +47,7 @@ namespace Unity.Platforms.MacOS
 
             var process = new Process();
             process.StartInfo = startInfo;
-            process.OutputDataReceived += (_, args) => Debug.Log(args.Data);
-            process.ErrorDataReceived += (_, args) => Debug.LogError(args.Data);
+            HookProcessToDebugLog(process);
             
             var success = process.Start();
             if (!success)
@@ -65,7 +78,6 @@ namespace Unity.Platforms.MacOS
 
             return Shell.Run(shellArgs);
         }
-
     }
 
     class IL2CPPMacOSBuildTarget : MacOSBuildTarget
@@ -86,8 +98,7 @@ namespace Unity.Platforms.MacOS
 
             var process = new Process();
             process.StartInfo = startInfo;
-            process.OutputDataReceived += (_, args) => Debug.Log(args.Data);
-            process.ErrorDataReceived += (_, args) => Debug.LogError(args.Data);
+            HookProcessToDebugLog(process);
             
             var success = process.Start();
             if (!success)
