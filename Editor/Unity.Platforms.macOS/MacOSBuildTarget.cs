@@ -11,11 +11,6 @@ namespace Unity.Platforms.MacOS
 
         internal static void HookProcessToDebugLog(Process process)
         {
-            process.OutputDataReceived += (_, args) =>
-            {
-                if (!string.IsNullOrEmpty(args.Data))
-                    Debug.Log(args.Data);
-            };
             process.ErrorDataReceived += (_, args) =>
             {
                 if (!string.IsNullOrEmpty(args.Data))
@@ -42,7 +37,7 @@ namespace Unity.Platforms.MacOS
             startInfo.WorkingDirectory = buildTarget.Directory.FullName;
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardOutput = false;
             startInfo.RedirectStandardError = true;
 
             var process = new Process();
@@ -53,7 +48,6 @@ namespace Unity.Platforms.MacOS
             if (!success)
                 return false;
 
-            process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
             return true;
@@ -93,7 +87,7 @@ namespace Unity.Platforms.MacOS
             startInfo.WorkingDirectory = buildTarget.Directory.FullName;
             startInfo.CreateNoWindow = true;
             startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = true;
+            startInfo.RedirectStandardOutput = false;
             startInfo.RedirectStandardError = true;
 
             var process = new Process();
@@ -104,7 +98,6 @@ namespace Unity.Platforms.MacOS
             if (!success)
                 return false;
 
-            process.BeginOutputReadLine();
             process.BeginErrorReadLine();
 
             return true;
