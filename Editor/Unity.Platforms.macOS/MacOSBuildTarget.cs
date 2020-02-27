@@ -28,6 +28,7 @@ namespace Unity.Platforms.MacOS
         public override string DisplayName => "macOS .NET";
         public override string BeeTargetName => "macos-dotnet";
         public override string ExecutableExtension => ".exe";
+        public override bool UsesIL2CPP => false;
 
         public override bool Run(FileInfo buildTarget)
         {
@@ -79,6 +80,7 @@ namespace Unity.Platforms.MacOS
         public override string DisplayName => "macOS IL2CPP";
         public override string BeeTargetName => "macos-il2cpp";
         public override string ExecutableExtension => string.Empty;
+        public override bool UsesIL2CPP => true;
 
         public override bool Run(FileInfo buildTarget)
         {
