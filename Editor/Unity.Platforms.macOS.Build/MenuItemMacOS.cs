@@ -3,6 +3,7 @@ using Unity.Build.Classic;
 using Unity.Build.Common;
 using Unity.Build.Editor;
 using UnityEditor;
+using UnityEngine;
 using BuildPipeline = Unity.Build.BuildPipeline;
 
 namespace Unity.Platforms.MacOS.Build
@@ -23,7 +24,14 @@ namespace Unity.Platforms.MacOS.Build
         {
             var pipeline = AssetDatabase.LoadAssetAtPath<BuildPipeline>(k_BuildPipelineClassicAssetPath);
             Selection.activeObject = BuildConfigurationMenuItem.CreateAssetInActiveDirectory(
-                "macOSClassic", new GeneralSettings(), new SceneList(), new ClassicBuildProfile { Pipeline = pipeline });
+                "macOSClassic", new GeneralSettings(), new SceneList(), new ClassicBuildProfile
+                {
+#if UNITY_2020_1_OR_NEWER
+                    Pipeline = new LazyLoadReference<BuildPipeline> { asset = pipeline }
+#else
+                    Pipeline = pipeline
+#endif
+                });
         }
     }
 }
