@@ -19,8 +19,14 @@ namespace Unity.Platforms.MacOS
         }
     }
 
-    abstract class DotNetMacOSBuildTargetBase : MacOSBuildTarget
+    class DotNetMacOSBuildTarget : MacOSBuildTarget
     {
+#if UNITY_EDITOR_OSX
+        protected override bool IsDefaultBuildTarget => true;
+#endif
+
+        public override string DisplayName => "macOS .NET";
+        public override string BeeTargetName => "macos-dotnet";
         public override string ExecutableExtension => ".exe";
         public override bool UsesIL2CPP => false;
 
@@ -69,25 +75,9 @@ namespace Unity.Platforms.MacOS
         }
     }
 
-    class DotNetTinyMacOSBuildTarget : DotNetMacOSBuildTargetBase
-    {
-#if UNITY_EDITOR_OSX
-        protected override bool IsDefaultBuildTarget => true;
-#endif
-
-        public override string DisplayName => "macOS .NET";
-        public override string BeeTargetName => "macos-dotnet";
-    }
-
-    class DotNetStandard20MacOSBuildTarget : DotNetMacOSBuildTargetBase
-    {
-        public override string DisplayName => "macOS .NET - .NET Standard 2.0";
-        public override string BeeTargetName => "macos-dotnet-ns20";
-    }
-
     class IL2CPPMacOSBuildTarget : MacOSBuildTarget
     {
-        public override string DisplayName => "macOS IL2CPP - Tiny";
+        public override string DisplayName => "macOS IL2CPP";
         public override string BeeTargetName => "macos-il2cpp";
         public override string ExecutableExtension => string.Empty;
         public override bool UsesIL2CPP => true;
