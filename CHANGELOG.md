@@ -7,18 +7,23 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [0.2.2] - 2020-03-14
 
 ### Changed
-- Updated `com.unity.platforms` package version to `0.2.2-preview.3`.
-- Updated `com.unity.platforms.desktop` package version to `0.2.2-preview.3`.
+- Updated `com.unity.platforms` package version to `0.2.2-preview.4`.
+- Updated `com.unity.platforms.desktop` package version to `0.2.2-preview.4`.
+- Renamed 'macOS .NET' build target to 'macOS .NET - Tiny'.
+- Renamed 'macOS IL2CPP' build target to 'macOS IL2CPP - Tiny'.
+
+### Added
+- Added 'macOS .NET - .NET Standard 2.0' build target.
 
 ## [0.2.1] - 2020-02-25
 
 ### Changed
 - Updated `com.unity.platforms` package version to `0.2.1-preview.7`.
 - Updated `com.unity.platforms.desktop` package version to `0.2.1-preview.7`.
-- Removed stdout redirect to Unity Console
+- Removed stdout redirect to Unity Console.
 
 ### Added
-- Add a UsesIL2CPP property to BuildTarget
+- Add a UsesIL2CPP property to BuildTarget.
 
 ## [0.2.1-preview] - 2020-01-24
 
