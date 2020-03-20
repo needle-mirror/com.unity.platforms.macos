@@ -4,15 +4,16 @@
 
 #include <CoreFoundation/CoreFoundation.h>
 
-void DialogUpdateCallback()
+typedef void (*BroadcastFunction)();
+
+void DialogUpdateCallback(BroadcastFunction broadcast)
 {
-// #if ENABLE_PLAYERCONNECTION
-//     PlayerConnection::Get().Poll();
-// #endif
+    if (broadcast != NULL)
+        broadcast();
 }
 
 DOTS_EXPORT(void)
-ShowDebuggerAttachDialog(const char* message)
+ShowDebuggerAttachDialog(const char* message, BroadcastFunction broadcast)
 {
     CFStringRef msg = CFStringCreateWithCString(kCFAllocatorDefault, message, kCFStringEncodingUTF8);
 
@@ -26,9 +27,9 @@ ShowDebuggerAttachDialog(const char* message)
     userNotification =  CFUserNotificationCreate(NULL, 0, kCFUserNotificationPlainAlertLevel, &err32, parameters);
 
     CFOptionFlags responseFlags = 0;
-    while (CFUserNotificationReceiveResponse(userNotification, 1, &responseFlags))
+    while (CFUserNotificationReceiveResponse(userNotification, 0.01, &responseFlags))
     {
-        DialogUpdateCallback();
+        DialogUpdateCallback(broadcast);
     }
     CFRelease(userNotification);
     CFRelease(parameters);
