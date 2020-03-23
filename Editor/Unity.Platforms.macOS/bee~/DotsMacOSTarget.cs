@@ -5,6 +5,7 @@ using Unity.BuildSystem.NativeProgramSupport;
 abstract class DotsMacOSTarget : DotsBuildSystemTarget
 {
     public override ToolChain ToolChain => new MacToolchain(MacSdk.Locatorx64.UserDefaultOrDummy);
+    public override bool CanUseBurst => true;
 }
 
 class DotsMacOSDotNetTinyTarget : DotsMacOSTarget
@@ -13,7 +14,6 @@ class DotsMacOSDotNetTinyTarget : DotsMacOSTarget
 
     public override ScriptingBackend ScriptingBackend => ScriptingBackend.Dotnet;
 
-    public override bool CanUseBurst => true;
 }
 
 class DotsMacOSDotNetStandard20Target : DotsMacOSTarget
@@ -21,8 +21,6 @@ class DotsMacOSDotNetStandard20Target : DotsMacOSTarget
     public override string Identifier => "macos-dotnet-ns20";
 
     public override ScriptingBackend ScriptingBackend => ScriptingBackend.Dotnet;
-
-    public override bool CanUseBurst => true;
 
     public override TargetFramework TargetFramework => TargetFramework.NetStandard20;
 }
