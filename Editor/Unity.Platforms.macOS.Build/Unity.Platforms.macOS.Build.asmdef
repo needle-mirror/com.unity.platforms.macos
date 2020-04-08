@@ -3,13 +3,19 @@
     "references": [
         "Unity.Build",
         "Unity.Build.Classic",
+        "Unity.Build.Classic.Private",
         "Unity.Build.Common",
         "Unity.Build.Editor",
         "Unity.Properties"
     ],
     "optionalUnityReferences": [],
+    "overrideReferences": true,
     "includePlatforms": [
         "Editor"
+    ],
+    "precompiledReferences": [
+        "bee.dll",
+        "Bee.Toolchain.MacOS.dll"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false

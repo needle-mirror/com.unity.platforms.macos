@@ -3,13 +3,13 @@ using Unity.Build;
 
 namespace Unity.Platforms.MacOS.Build
 {
-    public sealed class RunInstanceMacOS : IRunInstance
+    sealed class MacOSRunInstance : IRunInstance
     {
         Process m_Process;
 
         public bool IsRunning => !m_Process.HasExited;
 
-        public RunInstanceMacOS(Process process)
+        public MacOSRunInstance(Process process)
         {
             m_Process = process;
         }
