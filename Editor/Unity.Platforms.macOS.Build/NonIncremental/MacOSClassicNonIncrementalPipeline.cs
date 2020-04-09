@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using Unity.Build;
 using Unity.Build.Classic;
+using Unity.Build.Common;
 using Unity.BuildSystem.NativeProgramSupport;
 using UnityEditor;
 
@@ -65,6 +66,13 @@ namespace Unity.Platforms.MacOS.Build
             }
 
             return context.Success(new MacOSRunInstance(process));
+        }
+
+        protected override void PrepareContext(BuildContext context)
+        {
+            base.PrepareContext(context);
+            var classicData = context.GetValue<ClassicSharedData>();
+            classicData.StreamingAssetsDirectory = $"{context.GetOutputBuildDirectory()}/{context.GetComponentOrDefault<GeneralSettings>().ProductName}.app/Contents/Resources/Data/StreamingAssets";
         }
     }
 }
