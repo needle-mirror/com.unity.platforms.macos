@@ -14,10 +14,10 @@ namespace Unity.Platforms.MacOS.Build
 
         // convenience methods
         public string AsString() { return ((PlistElementString)this).value; }
-        public int AsInteger()   { return ((PlistElementInteger)this).value; }
-        public bool AsBoolean()  { return ((PlistElementBoolean)this).value; }
+        public int AsInteger() { return ((PlistElementInteger)this).value; }
+        public bool AsBoolean() { return ((PlistElementBoolean)this).value; }
         public PlistElementArray AsArray() { return (PlistElementArray)this; }
-        public PlistElementDict AsDict()   { return (PlistElementDict)this; }
+        public PlistElementDict AsDict() { return (PlistElementDict)this; }
         public float AsReal() { return ((PlistElementReal)this).value; }
         public DateTime AsDate() { return ((PlistElementDate)this).value; }
 
@@ -67,8 +67,8 @@ namespace Unity.Platforms.MacOS.Build
     {
         public PlistElementDict() : base() {}
 
-        private SortedDictionary<string, PlistElement> m_PrivateValue = new SortedDictionary<string, PlistElement>();
-        public IDictionary<string, PlistElement> values { get { return m_PrivateValue; }}
+        private readonly SortedDictionary<string, PlistElement> m_PrivateValue = new SortedDictionary<string, PlistElement>();
+        public IDictionary<string, PlistElement> values { get { return m_PrivateValue; } }
 
         new public PlistElement this[string key]
         {
@@ -242,7 +242,7 @@ namespace Unity.Platforms.MacOS.Build
                     for (int i = 0; i < children.Count - 1; i++)
                     {
                         if (children[i].Name != "key")
-                            throw new Exception("Malformed plist file. Found '"+children[i].Name+"' where 'key' was expected.");
+                            throw new Exception("Malformed plist file. Found '" + children[i].Name + "' where 'key' was expected.");
                         string key = GetText(children[i]).Trim();
                         var newChild = ReadElement(children[i + 1]);
                         if (newChild != null)
