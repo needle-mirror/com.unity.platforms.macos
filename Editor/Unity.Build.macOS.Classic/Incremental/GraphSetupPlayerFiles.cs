@@ -20,8 +20,10 @@ namespace Unity.Build.macOS.Classic
         {
             var classicContext = context.GetValue<IncrementalClassicSharedData>();
             var playerDirectory = classicContext.VariationDirectory;
-            var productName = context.GetComponentOrDefault<GeneralSettings>().ProductName;
+            var generalSettings = context.GetComponentOrDefault<GeneralSettings>();
+            var productName = generalSettings.ProductName;
             var appName = new NPath(productName + ".app");
+            var appData = appName.Combine("Contents", "Resources", "Data");
 
             NPath outputBuildDirectory = new NPath(context.GetOutputBuildDirectory()).MakeAbsolute();
             foreach (var file in playerDirectory.Files(true))
@@ -34,7 +36,7 @@ namespace Unity.Build.macOS.Classic
 
                 var targetRelativePath = file.RelativeTo(playerDirectory);
                 if (targetRelativePath.ToString().StartsWith("Data/"))
-                    targetRelativePath = appName.Combine("Contents", "Resources", "Data");
+                    targetRelativePath = appData;
 
                 // Replace UnityPlayer.app (from the player package) to the output app's name
                 var modifiedTargetRelativePath = targetRelativePath.ToString()
@@ -65,6 +67,14 @@ namespace Unity.Build.macOS.Classic
                 CopyTool.Instance().Setup(outputBuildDirectory.Combine(appName, "Contents", "Frameworks", file.FileName),
                     file.MakeAbsolute());
             }
+            
+            var appInfo = outputBuildDirectory.Combine(appData, "app.info");
+            Backend.Current.AddWriteTextAction(appInfo,
+                string.Join("\n", new[]
+                {
+                    generalSettings.CompanyName,
+                    generalSettings.ProductName
+                }));
 
             var artifact = context.GetOrCreateValue<MacOSArtifact>();
             artifact.OutputTargetFile =

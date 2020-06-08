@@ -1,8 +1,9 @@
 using System.Diagnostics;
 using System.IO;
+using Bee.Core;
+using Unity.Build;
 using Unity.Build.Classic.Private;
 using Unity.Build.Common;
-using Unity.BuildSystem.NativeProgramSupport;
 using UnityEditor;
 
 namespace Unity.Build.macOS.Classic
