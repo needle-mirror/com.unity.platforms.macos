@@ -1,11 +1,11 @@
 ﻿using NUnit.Framework;
-using Unity.Platforms.MacOS;
+using Unity.Build.MacOS.DotsRuntime;
 
 class BasicTests
 {
-	[Test]
-	public void VerifyCanReferenceMacOSBuildTarget()
-	{
-		Assert.IsNotNull(typeof(MacOSBuildTarget));
-	}
+    [Test]
+    public void VerifyCanReferenceMacOSBuildTarget()
+    {
+        Assert.IsNotNull(typeof(MacOSBuildTarget));
+    }
 }
