@@ -1,15 +1,14 @@
 #if ENABLE_EXPERIMENTAL_INCREMENTAL_PIPELINE
-using Bee.NativeProgramSupport.Building;
 using NiceIO;
-using System;
 using System.Diagnostics;
-using System.Linq;
+using Bee.Core;
+using Bee.Toolchain.MacOS;
 using Unity.Build;
+using Unity.Build.Classic;
 using Unity.Build.Classic.Private;
 using Unity.Build.Classic.Private.IncrementalClassicPipeline;
 using Unity.Build.Common;
-using Unity.BuildSystem.NativeProgramSupport;
-using Unity.BuildTools;
+using Bee.Tools;
 using UnityEditor;
 
 namespace Unity.Build.macOS.Classic
@@ -35,54 +34,80 @@ namespace Unity.Build.macOS.Classic
             base.PrepareContext(context);
 
             var classicContext = context.GetValue<IncrementalClassicSharedData>();
-            var appBundleResourcesDirectory =
-                new NPath(context.GetOutputBuildDirectory()).Combine(
-                    context.GetComponentOrDefault<GeneralSettings>().ProductName + ".app", "Contents", "Resources");
-            var appBundlePluginsDirectory =
-                new NPath(context.GetOutputBuildDirectory()).Combine(
-                    context.GetComponentOrDefault<GeneralSettings>().ProductName + ".app", "Contents", "Plugins");
-            classicContext.DataDeployDirectory = appBundleResourcesDirectory.Combine("Data").MakeAbsolute();
+            var appBundleContentsDirectory = $"{context.GetOutputBuildDirectory()}/{context.GetComponentOrDefault<GeneralSettings>().ProductName}.app/Contents";
+            var appBundleResourcesDirectory = $"{appBundleContentsDirectory}/Resources";
+
+            var appBundlePluginsDirectory = $"{appBundleContentsDirectory}/Plugins";
+            classicContext.DataDeployDirectory = $"{appBundleResourcesDirectory}/Data";
+
+            var appBundleFrameworksDirectory = $"{appBundleContentsDirectory}/Frameworks";
+            classicContext.DataDeployDirectory = $"{appBundleResourcesDirectory}/Data";
 
             var classicData = context.GetValue<ClassicSharedData>();
-            classicData.StreamingAssetsDirectory = classicContext.DataDeployDirectory.Combine("StreamingAssets").ToString();
+            classicData.StreamingAssetsDirectory = $"{classicContext.DataDeployDirectory}/StreamingAssets";
 
-            // TODO: Add support for IL2CPP builds too
-            classicContext.VariationDirectory = classicContext.PlayerPackageDirectory.Combine("Variations", classicData.DevelopmentPlayer ? "macosx64_development_mono" : "macosx64_nondevelopment_mono").MakeAbsolute();
+            var scriptingSettings = context.GetComponentOrDefault<ClassicScriptingSettings>();
+            var scriptingTag = scriptingSettings.ScriptingBackend == ScriptingImplementation.Mono2x ? "mono" : "il2cpp";
+
+            classicContext.VariationDirectory = classicContext.PlayerPackageDirectory.Combine("Variations", classicData.DevelopmentPlayer ? $"macosx64_development_{scriptingTag}" : $"macosx64_nondevelopment_{scriptingTag}").MakeAbsolute();
             classicContext.UnityEngineAssembliesDirectory = classicContext.VariationDirectory.Combine("Data", "Managed");
             classicContext.IL2CPPDataDirectory = classicContext.DataDeployDirectory.Combine("il2cpp_data");
-            classicContext.LibraryDeployDirectory = context.GetOutputBuildDirectory();
+            classicContext.LibraryDeployDirectory = appBundleFrameworksDirectory;
 
-            var hostToolChain = TypeCache.GetTypesDerivedFrom<ToolChainForHostProvider>().Select(Activator.CreateInstance).Cast<ToolChainForHostProvider>().Select(p => p.Provide()).First(t => t != null);
-
+            var toolchain = new MacToolchain(MacSdk.Locatorx64.UserDefaultOrLatest);
             classicContext.Architectures.Add(
                 Architecture.x64,
-                new ClassicBuildArchitectureData()
+                new ClassicBuildArchitectureData
                 {
                     DynamicLibraryDeployDirectory = appBundlePluginsDirectory,
+                    IL2CPPLibraryDirectory = appBundleFrameworksDirectory,
                     BurstTarget = "x64_SSE4",
-                    ToolChain = hostToolChain,
-                    NativeProgramFormat = hostToolChain.DynamicLibraryFormat
+                    ToolChain = toolchain,
+                    NativeProgramFormat = toolchain.DynamicLibraryFormat
                 }
             );
         }
 
+        protected override CleanResult OnClean(CleanContext context)
+        {
+            var buildType = context.GetComponentOrDefault<ClassicBuildProfile>().Configuration;
+            bool isDevelopment = buildType == BuildType.Debug || buildType == BuildType.Develop;
+            var playbackEngineDirectory = new NPath(UnityEditor.BuildPipeline.GetPlaybackEngineDirectory(BuildTarget, isDevelopment ? BuildOptions.Development : BuildOptions.None));
+
+            if (context.HasComponent<InstallInBuildFolder>())
+            {
+                NPath sourceBuildDirectory = $"{playbackEngineDirectory}/SourceBuild/{context.BuildConfigurationName}";
+
+                if (sourceBuildDirectory.DirectoryExists())
+                    sourceBuildDirectory.Delete();
+            }
+            return base.OnClean(context);
+        }
+
+        protected override BoolResult OnCanRun(RunContext context)
+        {
+#if UNITY_STANDALONE_OSX
+            return BoolResult.True();
+#else
+            return BoolResult.False("Active Editor platform has to be set to macOS Standalone.");
+#endif
+        }
         protected override RunResult OnRun(RunContext context)
         {
             var artifact = context.GetLastBuildArtifact<MacOSArtifact>();
-            var process = new Process();
-
-            process.StartInfo.FileName = "open";
-            process.StartInfo.Arguments = artifact.OutputTargetFile.FullName.InQuotes();
-            process.StartInfo.WorkingDirectory = artifact.OutputTargetFile.Directory?.FullName ?? string.Empty;
-            process.StartInfo.CreateNoWindow = true;
-            process.StartInfo.UseShellExecute = true;
-
-            if (!process.Start())
+            var process = new Process
             {
-                return context.Failure($"Failed to start process at '{process.StartInfo.FileName}'.");
-            }
+                StartInfo =
+                {
+                    FileName = "open",
+                    Arguments = artifact.OutputTargetFile.FullName.InQuotes(),
+                    WorkingDirectory = artifact.OutputTargetFile.Directory?.FullName ?? string.Empty,
+                    CreateNoWindow = true,
+                    UseShellExecute = true
+                }
+            };
 
-            return context.Success(new MacOSRunInstance(process));
+            return !process.Start() ? context.Failure($"Failed to start process at '{process.StartInfo.FileName}'.") : context.Success(new MacOSRunInstance(process));
         }
     }
 }
