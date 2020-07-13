@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using System.IO;
+using Unity.Build.Internals;
 using Unity.Build.DotsRuntime;
 using Debug = UnityEngine.Debug;
 
@@ -49,9 +50,9 @@ namespace Unity.Build.MacOS.DotsRuntime
             return true;
         }
 
-        public override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
+        internal override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
         {
-            var shellArgs = new ShellProcessArgs
+            var shellArgs = new ShellProcessArguments
             {
                 Executable = Path.GetFullPath(Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "MonoBleedingEdge", "bin", "mono")),
                 Arguments = new[] { $"\"{workingDirPath}/{exeName}{ExecutableExtension}\"" },
@@ -66,7 +67,7 @@ namespace Unity.Build.MacOS.DotsRuntime
                 shellArgs.MaxIdleKillIsAnError = false;
             }
 
-            return Shell.Run(shellArgs);
+            return ShellProcess.Run(shellArgs);
         }
     }
 
@@ -116,9 +117,9 @@ namespace Unity.Build.MacOS.DotsRuntime
             return true;
         }
 
-        public override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
+        internal override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
         {
-            var shellArgs = new ShellProcessArgs
+            var shellArgs = new ShellProcessArguments
             {
                 Executable = $"{workingDirPath}/{exeName}{ExecutableExtension}",
                 Arguments = new string[] { },
@@ -133,7 +134,7 @@ namespace Unity.Build.MacOS.DotsRuntime
                 shellArgs.MaxIdleKillIsAnError = false;
             }
 
-            return Shell.Run(shellArgs);
+            return ShellProcess.Run(shellArgs);
         }
     }
 }
