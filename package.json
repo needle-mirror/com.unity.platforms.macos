@@ -1,7 +1,7 @@
 {
   "name": "com.unity.platforms.macos",
   "displayName": "Platforms macOS",
-  "version": "0.8.0-preview.4",
+  "version": "0.8.0-preview.5",
   "unity": "2020.1",
   "unityRelease": "0f1",
   "description": "Provides platform and build specific features for the macOS platform.",
@@ -13,15 +13,15 @@
     "osx"
   ],
   "dependencies": {
-    "com.unity.platforms": "0.8.0-preview.4",
-    "com.unity.platforms.desktop": "0.8.0-preview.4"
+    "com.unity.platforms": "0.8.0-preview.5",
+    "com.unity.platforms.desktop": "0.8.0-preview.5"
   },
   "upmCi": {
-    "footprint": "b2db179b6857bfa4fca5e57f820abe70b54fa55d"
+    "footprint": "771dac0b637fcf4ec9a370805a1ef2b1f8fbdf98"
   },
   "repository": {
     "url": "https://github.com/Unity-Technologies/dots-platforms.git",
     "type": "git",
-    "revision": "27504387281b80e61fffb2d521979f347f584f79"
+    "revision": "0e6feb31d47720c65a58f5c462e945b5d19a0a9e"
   }
 }
