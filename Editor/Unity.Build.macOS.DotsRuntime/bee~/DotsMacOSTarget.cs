@@ -1,6 +1,7 @@
 using DotsBuildTargets;
-using Unity.BuildSystem.MacSDKSupport;
-using Unity.BuildSystem.NativeProgramSupport;
+
+using Bee.NativeProgramSupport;
+using Bee.Toolchain.MacOS;
 
 abstract class DotsMacOSTarget : DotsBuildSystemTarget
 {
