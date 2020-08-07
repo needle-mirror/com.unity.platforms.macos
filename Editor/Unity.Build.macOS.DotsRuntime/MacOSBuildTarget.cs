@@ -2,6 +2,7 @@ using System.Diagnostics;
 using System.IO;
 using Unity.Build.Internals;
 using Unity.Build.DotsRuntime;
+using Unity.Build.Desktop.DotsRuntime;
 using Debug = UnityEngine.Debug;
 
 namespace Unity.Build.MacOS.DotsRuntime
@@ -10,15 +11,6 @@ namespace Unity.Build.MacOS.DotsRuntime
     {
         public override bool CanBuild => UnityEngine.Application.platform == UnityEngine.RuntimePlatform.OSXEditor;
         public override string UnityPlatformName => nameof(UnityEditor.BuildTarget.StandaloneOSX);
-
-        internal static void HookProcessToDebugLog(Process process)
-        {
-            process.ErrorDataReceived += (_, args) =>
-            {
-                if (!string.IsNullOrEmpty(args.Data))
-                    Debug.LogError(args.Data);
-            };
-        }
     }
 
     abstract class DotNetMacOSBuildTargetBase : MacOSBuildTarget
@@ -32,22 +24,8 @@ namespace Unity.Build.MacOS.DotsRuntime
             startInfo.Arguments = $"\"{buildTarget.FullName.Trim('\"')}\"";
             startInfo.FileName = Path.GetFullPath(Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "MonoBleedingEdge", "bin", "mono"));
             startInfo.WorkingDirectory = buildTarget.Directory.FullName;
-            startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = false;
-            startInfo.RedirectStandardError = true;
-
-            var process = new Process();
-            process.StartInfo = startInfo;
-            HookProcessToDebugLog(process);
-
-            var success = process.Start();
-            if (!success)
-                return false;
-
-            process.BeginErrorReadLine();
-
-            return true;
+            
+            return new DesktopRun().RunOnThread(startInfo);
         }
 
         internal override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
@@ -56,18 +34,9 @@ namespace Unity.Build.MacOS.DotsRuntime
             {
                 Executable = Path.GetFullPath(Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "MonoBleedingEdge", "bin", "mono")),
                 Arguments = new[] { $"\"{workingDirPath}/{exeName}{ExecutableExtension}\"" },
-                WorkingDirectory = new DirectoryInfo(workingDirPath),
-                ThrowOnError = false
             };
 
-            // samples should be killed on timeout
-            if (timeout > 0)
-            {
-                shellArgs.MaxIdleTimeInMilliseconds = timeout;
-                shellArgs.MaxIdleKillIsAnError = false;
-            }
-
-            return ShellProcess.Run(shellArgs);
+            return DesktopRun.RunTestMode(shellArgs, workingDirPath, timeout);
         }
     }
 
@@ -99,22 +68,8 @@ namespace Unity.Build.MacOS.DotsRuntime
             var startInfo = new ProcessStartInfo();
             startInfo.FileName = buildTarget.FullName.Trim('.');
             startInfo.WorkingDirectory = buildTarget.Directory.FullName;
-            startInfo.CreateNoWindow = true;
-            startInfo.UseShellExecute = false;
-            startInfo.RedirectStandardOutput = false;
-            startInfo.RedirectStandardError = true;
 
-            var process = new Process();
-            process.StartInfo = startInfo;
-            HookProcessToDebugLog(process);
-
-            var success = process.Start();
-            if (!success)
-                return false;
-
-            process.BeginErrorReadLine();
-
-            return true;
+            return new DesktopRun().RunOnThread(startInfo);
         }
 
         internal override ShellProcessOutput RunTestMode(string exeName, string workingDirPath, int timeout)
@@ -123,18 +78,9 @@ namespace Unity.Build.MacOS.DotsRuntime
             {
                 Executable = $"{workingDirPath}/{exeName}{ExecutableExtension}",
                 Arguments = new string[] { },
-                WorkingDirectory = new DirectoryInfo(workingDirPath),
-                ThrowOnError = false
             };
 
-            // samples should be killed on timeout
-            if (timeout > 0)
-            {
-                shellArgs.MaxIdleTimeInMilliseconds = timeout;
-                shellArgs.MaxIdleKillIsAnError = false;
-            }
-
-            return ShellProcess.Run(shellArgs);
+            return DesktopRun.RunTestMode(shellArgs, workingDirPath, timeout);
         }
     }
 }
