@@ -1,16 +1,19 @@
 using System.Diagnostics;
 using System.IO;
-using Unity.Build.Internals;
-using Unity.Build.DotsRuntime;
 using Unity.Build.Desktop.DotsRuntime;
-using Debug = UnityEngine.Debug;
+using Unity.Build.DotsRuntime;
+using Unity.Build.Internals;
+using UnityEngine;
 
 namespace Unity.Build.MacOS.DotsRuntime
 {
     public abstract class MacOSBuildTarget : BuildTarget
     {
+        protected static Texture2D s_Icon = LoadIcon("Icons", "BuildSettings.Standalone");
+
         public override bool CanBuild => UnityEngine.Application.platform == UnityEngine.RuntimePlatform.OSXEditor;
         public override string UnityPlatformName => nameof(UnityEditor.BuildTarget.StandaloneOSX);
+        public override Texture2D Icon => s_Icon;
     }
 
     abstract class DotNetMacOSBuildTargetBase : MacOSBuildTarget
@@ -24,7 +27,7 @@ namespace Unity.Build.MacOS.DotsRuntime
             startInfo.Arguments = $"\"{buildTarget.FullName.Trim('\"')}\"";
             startInfo.FileName = Path.GetFullPath(Path.Combine(UnityEditor.EditorApplication.applicationContentsPath, "MonoBleedingEdge", "bin", "mono"));
             startInfo.WorkingDirectory = buildTarget.Directory.FullName;
-            
+
             return new DesktopRun().RunOnThread(startInfo);
         }
 
