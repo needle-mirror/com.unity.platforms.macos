@@ -4,16 +4,13 @@
         "Unity.Build",
         "Unity.Build.Classic",
         "Unity.Build.Classic.Private",
-        "Unity.Build.Editor"
+        "Unity.Build.Editor",
+        "Unity.Build.macOS"
     ],
     "optionalUnityReferences": [],
     "overrideReferences": true,
     "includePlatforms": [
         "Editor"
-    ],
-    "precompiledReferences": [
-        "bee.dll",
-        "Bee.Toolchain.MacOS.dll"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false

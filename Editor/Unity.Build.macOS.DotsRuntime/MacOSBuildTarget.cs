@@ -1,3 +1,4 @@
+using System;
 using System.Diagnostics;
 using System.IO;
 using Unity.Build.Desktop.DotsRuntime;
@@ -51,6 +52,9 @@ namespace Unity.Build.MacOS.DotsRuntime
 
         public override string DisplayName => "macOS .NET";
         public override string BeeTargetName => "macos-dotnet";
+        public override Type[] DefaultComponents { get; }
+        public override string DefaultAssetFileName => "Mac-DotNet";
+        public override bool ShouldCreateBuildTargetByDefault => true;
     }
 
     class DotNetStandard20MacOSBuildTarget : DotNetMacOSBuildTargetBase

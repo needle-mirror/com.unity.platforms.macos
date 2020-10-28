@@ -1,16 +1,13 @@
-using Bee.Core;
 using System.Diagnostics;
 using System.IO;
 using Unity.Build.Classic.Private;
 using Unity.Build.Common;
-using UnityEditor;
 
 namespace Unity.Build.macOS.Classic
 {
     sealed class MacOSClassicNonIncrementalPipeline : ClassicNonIncrementalPipelineBase
     {
-        protected override BuildTarget BuildTarget { get; } = BuildTarget.StandaloneOSX;
-        public override Platform Platform => new MacOSXPlatform();
+        public override Platform Platform => Platform.macOS;
 
         public override BuildStepCollection BuildSteps { get; } = new[]
         {
@@ -24,7 +21,7 @@ namespace Unity.Build.macOS.Classic
 
         protected override BoolResult OnCanRun(RunContext context)
         {
-            var artifact = context.GetLastBuildArtifact<MacOSArtifact>();
+            var artifact = context.GetBuildArtifact<MacOSArtifact>();
             if (artifact == null)
             {
                 return BoolResult.False($"Could not retrieve build artifact '{nameof(MacOSArtifact)}'.");
@@ -46,7 +43,7 @@ namespace Unity.Build.macOS.Classic
 
         protected override RunResult OnRun(RunContext context)
         {
-            var artifact = context.GetLastBuildArtifact<MacOSArtifact>();
+            var artifact = context.GetBuildArtifact<MacOSArtifact>();
             var process = new Process
             {
                 StartInfo =

@@ -14,7 +14,7 @@ namespace Unity.Build.macOS.Classic
                 return context.Failure($"Could not retrieve {nameof(BuildReport)} from build context.");
             }
 
-            var artifact = context.GetOrCreateValue<MacOSArtifact>();
+            var artifact = context.GetOrCreateBuildArtifact<MacOSArtifact>();
             artifact.OutputTargetFile = new FileInfo(report.summary.outputPath);
             return context.Success();
         }
